@@ -32,7 +32,7 @@ public class SQSController extends Observable implements Runnable {
     }
 
     /**
-     * 
+     * check if new messages are receiveable
      */
     private void doCheckMessages() {
             ArrayList<Message> messageList = sqsUtil.getMessagefromAnotherEntrypoint("test2013");

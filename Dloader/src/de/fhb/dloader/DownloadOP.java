@@ -16,7 +16,7 @@ import com.amazonaws.services.sqs.model.Message;
  */
 public class DownloadOP implements Observer{
     /**
-     * 
+     * The Arraylist containing the messages
      */
     private ArrayList<Message> messageList = new ArrayList<Message>();
     
