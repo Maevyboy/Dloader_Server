@@ -14,7 +14,7 @@ import com.amazonaws.services.sqs.model.Message;
  * @author MaccaPC
  *
  */
-public class SQSController extends Observable implements Runnable {
+public class SQSController implements Runnable {
 
     /** The sqs utility instance*/
     private SqsUtil sqsUtil;
@@ -33,12 +33,14 @@ public class SQSController extends Observable implements Runnable {
 
     /**
      * check if new messages are receiveable
+     * @throws InterruptedException 
      */
-    private void doCheckMessages() {
+    private void doCheckMessages() throws InterruptedException {
             ArrayList<Message> messageList = sqsUtil.getMessagefromAnotherEntrypoint("test2013");
             if (messageList != null) {
-                // notify Observers
-                notifyObservers(messageList);
+               Thread dloaderThread = new Thread(new DownloadOP(messageList));
+               dloaderThread.run();
+               dloaderThread.wait(100000);
                 
             }else{
                 System.out.println("NO NEW MESSAGES");
@@ -48,7 +50,12 @@ public class SQSController extends Observable implements Runnable {
 
     @Override
     public void run() {
-        doCheckMessages();
-        
+        while(true){
+            try {
+                doCheckMessages();
+            } catch (InterruptedException e) {
+                // do nothing
+            }
+        }
     }
 }

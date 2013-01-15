@@ -5,8 +5,6 @@ package de.fhb.dloader;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 
 import com.amazonaws.services.sqs.model.Message;
 
@@ -14,7 +12,7 @@ import com.amazonaws.services.sqs.model.Message;
  * @author MaccaPC
  *
  */
-public class DownloadOP implements Observer{
+public class DownloadOP implements Runnable{
     /**
      * The Arraylist containing the messages
      */
@@ -22,17 +20,18 @@ public class DownloadOP implements Observer{
     
     /**
      *  Default constructor
+     * @param aMessageList 
      */
-    public DownloadOP(){
-        
+    public DownloadOP(ArrayList<Message> aMessageList){
+        this.messageList = aMessageList;
     }
 
 
-    @SuppressWarnings("unchecked")
+
+
+
     @Override
-    public void update(Observable o, Object arg) {
-        messageList = (ArrayList<Message>)arg;
-        
+    public void run() {
         for (Message aMessage : messageList) {
             try {
                 new Downloader().doDownloadFile(aMessage.getBody());
