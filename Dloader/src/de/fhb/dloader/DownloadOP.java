@@ -33,11 +33,14 @@ public class DownloadOP implements Runnable{
     @Override
     public void run() {
         for (Message aMessage : messageList) {
-            try {
-                new Downloader().doDownloadFile(aMessage.getBody());
-            } catch (IOException e) {
-                // do nothing
-            }
+
+                try {
+                    Thread downloadThread = new Thread(new Downloader(aMessage.getBody()));
+                    downloadThread.start();
+                } catch (IOException e) {
+                   // do nothing
+                }
+
         }
         
     }

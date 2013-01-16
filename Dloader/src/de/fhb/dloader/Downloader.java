@@ -12,13 +12,16 @@ import java.net.URL;
  * @author MaccaPC
  *
  */
-public class Downloader {
+public class Downloader implements Runnable{
 
+    
+    private String fileUrlStr;
     /**
      * Default constructor
+     * @throws IOException 
      */
-    public Downloader(){
-        
+    public Downloader(String afileUrl) throws IOException{
+        this.fileUrlStr = afileUrl;
     }
     
     /**
@@ -26,12 +29,12 @@ public class Downloader {
      * @param aFileUrl
      * @throws IOException 
      */
-    public void doDownloadFile(String aFileUrl) throws IOException{
-        URL fileUrl = new URL(aFileUrl);
+    public void doDownloadFile() throws IOException{
+        URL fileUrl = new URL(fileUrlStr);
         fileUrl.openConnection();
         InputStream dloaderReader = fileUrl.openStream();
         
-        String filename = extractFilename(aFileUrl);
+        String filename = extractFilename(fileUrlStr);
         
         FileOutputStream dloaderWriter = new FileOutputStream(filename);
         byte[] dloaderBuffer = new byte[153600];
@@ -62,6 +65,16 @@ public class Downloader {
      aLink = aLink.substring(beginIndex);
 
      return aLink;
+    }
+
+    @Override
+    public void run() {
+        try {
+            doDownloadFile();
+        } catch (IOException e) {
+            // do nothing
+        }
+        
     }
     
     

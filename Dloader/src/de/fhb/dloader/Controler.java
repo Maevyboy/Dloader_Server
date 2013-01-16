@@ -18,8 +18,7 @@ public class Controler {
      */
     public static void main(String[] args) throws IOException, InterruptedException {
        
-           Thread sqsControllerThread = new Thread(new SQSController());
-           sqsControllerThread.start();
+        new SQSController().doCheckMessages();
     }
 
 }
