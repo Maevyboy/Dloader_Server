@@ -37,11 +37,11 @@ public class SQSController {
      */
     public void doCheckMessages() throws InterruptedException {
         while (true) {
-            ArrayList<Message> messageList = sqsUtil.getMessagefromAnotherEntrypoint("test2013");
+            ArrayList<Message> messageList = sqsUtil.getMessagefromAnotherEntrypoint("Links2013");
             if (messageList != null) {
                 Thread dloaderThread = new Thread(new DownloadOP(messageList));
                 dloaderThread.run();
-                dloaderThread.wait(100000);
+                Thread.sleep(10000);
 
             } else {
                 System.out.println("NO NEW MESSAGES");

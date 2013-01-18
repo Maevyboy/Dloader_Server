@@ -18,6 +18,7 @@ public class Downloader implements Runnable{
     private String fileUrlStr;
     /**
      * Default constructor
+     * @param afileUrl the url of the given file
      * @throws IOException 
      */
     public Downloader(String afileUrl) throws IOException{
@@ -29,7 +30,7 @@ public class Downloader implements Runnable{
      * @param aFileUrl
      * @throws IOException 
      */
-    public void doDownloadFile() throws IOException{
+    public synchronized void doDownloadFile() throws IOException{
         URL fileUrl = new URL(fileUrlStr);
         fileUrl.openConnection();
         InputStream dloaderReader = fileUrl.openStream();
@@ -53,9 +54,9 @@ public class Downloader implements Runnable{
     /**
      * Extracts the filename of the given link.
      * @param aLink
-     * @return
+     * @return the extracted file name
      */
-    private String extractFilename(String aLink) {
+    private synchronized String extractFilename(String aLink) {
      if (aLink.endsWith("/")) {
       aLink = aLink.substring(0, aLink.length() - 1);
      }
