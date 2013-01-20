@@ -1,6 +1,7 @@
 package de.fhb.dloader;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -113,26 +114,23 @@ public class BucketUtil {
      * @param aKey
      *            the received key
      */
-    public void uploadOntoBucket(String aBckNam, Object src, String aKey) {
+    public void uploadOntoBucket(String aBckNam, InputStream src, String aKey) {
         // Checks if the received Object is a File
-        if (aBckNam != null && aKey != null) {
-            if (src instanceof File) {
-                aAmzObj.putObject(new PutObjectRequest(aBckNam, aKey, (File)src));
-            } else if (src instanceof InputStream) {
                 try {
                     Long contentLength = null;
-                    InputStream is = (InputStream)src;
+                    InputStream is = src;
                     byte[] contentBytes;
 
                     contentBytes = IOUtils.toByteArray(is);
-
                     contentLength = Long.valueOf(contentBytes.length);
+                    is = new ByteArrayInputStream(contentBytes);
+
                     ObjectMetadata metadata = new ObjectMetadata();
                     metadata.setContentLength(contentLength);
-                    aAmzObj.putObject(new PutObjectRequest(aBckNam, aKey, (InputStream)src, metadata));
+                    aAmzObj.putObject(new PutObjectRequest(aBckNam, aKey, is, metadata));
                 } catch (IOException e) {}
-            }
-        }
+            
+        
     }
 
     /**

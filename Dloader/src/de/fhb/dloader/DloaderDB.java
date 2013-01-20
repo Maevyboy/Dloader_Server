@@ -47,31 +47,21 @@ public class DloaderDB {
     /**
      * Adds a Link to a specified simple DB
      * @param aDomainName 
-     * @param aLinkLst 
+     * @param aLinkKey 
      */
-    public void addLinksToChart(String aDomainName, HashMap<String , String> aLinkLst){
-        List<ReplaceableItem> itemList = getAsAwsDBLst(aLinkLst);
-        sDB.batchPutAttributes(new BatchPutAttributesRequest(DLOADERLIST, itemList));
+    public void addLinksToChart(String aDomainName, String aLinkKey){
+        List<ReplaceableAttribute> attrLst = new ArrayList<ReplaceableAttribute>();
+        attrLst.add(new ReplaceableAttribute(aLinkKey, aLinkKey, false));
+        sDB.putAttributes(new PutAttributesRequest(aDomainName, DLOADERLIST, attrLst));
     }
-    /**
-     * Gets the raw HashMap as a AWS ReplaceItemList.
-     * @return the itemList
-     */
-    private List<ReplaceableItem> getAsAwsDBLst(HashMap<String, String> aLinkLst){
-        List<ReplaceableItem> awsLst = new ArrayList<ReplaceableItem>();
-        List<ReplaceableAttribute> awsAttrLst = new ArrayList<ReplaceableAttribute>();
-        for (String aKey : aLinkLst.keySet()) {
-            awsAttrLst.add(new ReplaceableAttribute(aKey, aLinkLst.get(aKey) , false));
-        }
-        awsLst.add(new ReplaceableItem(DLOADERLIST, awsAttrLst));
-        return awsLst;
-    }
+
     /**
      * Returns the Dloader links.
+     * @param aDomainName 
      * @return a list containing all Items
      */
-    public List<Item> getDloaderLinks(){
-        String sql = "select * from `" + DLOADERLIST + "`";;
+    public List<Item> getDloaderLinks(String aDomainName){
+        String sql = "select " + aDomainName + " from `" + DLOADERLIST + "`";;
         SelectResult selectResult = sDB.select(new SelectRequest(sql));
         return selectResult.getItems();
     }

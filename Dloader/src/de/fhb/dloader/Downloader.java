@@ -7,6 +7,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
+
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.simpledb.AmazonSimpleDBClient;
+import com.amazonaws.services.simpledb.model.Attribute;
+import com.amazonaws.services.simpledb.model.Item;
 
 /**
  * @author MaccaPC
@@ -50,13 +56,25 @@ public class Downloader implements Runnable{
         dloaderWriter.close();
         dloaderReader.close();
     }
-    
+    /**
+     * Gets the downloaded file as Inputstream
+     * @return the Inputstream
+     * @throws IOException 
+     * 
+     */
+    public InputStream getDownloadInputStream () throws IOException{
+        URL fileUrl = new URL(fileUrlStr);
+        fileUrl.openConnection();
+        InputStream dloaderReader = fileUrl.openStream();
+        return dloaderReader;
+    }
+
     /**
      * Extracts the filename of the given link.
      * @param aLink
      * @return the extracted file name
      */
-    private synchronized String extractFilename(String aLink) {
+    private String extractFilename(String aLink) {
      if (aLink.endsWith("/")) {
       aLink = aLink.substring(0, aLink.length() - 1);
      }
@@ -71,7 +89,25 @@ public class Downloader implements Runnable{
     @Override
     public void run() {
         try {
-            doDownloadFile();
+            AmazonS3 s3 = AwsS3Credentials.getIns("AwsCredentials.properties").initCredentials();
+            BucketUtil aBck = new BucketUtil(s3);
+            aBck.uploadOntoBucket("dloaderbucket", getDownloadInputStream(), extractFilename(fileUrlStr));
+            
+            AmazonSimpleDBClient aDBCli = AwsSimpleDBCredentials.getIns("AwsCredentials.properties").initCredentials();
+            DloaderDB aSdb = new DloaderDB(aDBCli);
+
+            aSdb.addLinksToChart("dloaderdomain", extractFilename(fileUrlStr));
+            
+            List<Item> itemLst = aSdb.getDloaderLinks("dloaderdomain");
+            for (Item item : itemLst) {
+                System.out.println("ITEM NAME : " + item.getName());
+                List<Attribute> attrLst = item.getAttributes();
+                for (Attribute attribute : attrLst) {
+                    System.out.println(" AN ATTRIBUTE : " + attribute.getName());
+                }
+                System.out.println("--------------------------");
+            }
+            
         } catch (IOException e) {
             // do nothing
         }
