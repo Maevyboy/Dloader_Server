@@ -61,8 +61,9 @@ public class DloaderDB {
      * @return a list containing all Items
      */
     public List<Item> getDloaderLinks(String aDomainName){
-        String sql = "select " + aDomainName + " from `" + DLOADERLIST + "`";;
+        String sql = "select * from `" + aDomainName + "`";;
         SelectResult selectResult = sDB.select(new SelectRequest(sql));
+       
         return selectResult.getItems();
     }
     

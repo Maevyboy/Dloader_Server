@@ -13,6 +13,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.simpledb.AmazonSimpleDBClient;
 import com.amazonaws.services.simpledb.model.Attribute;
 import com.amazonaws.services.simpledb.model.Item;
+import com.amazonaws.services.simpledb.model.ListDomainsResult;
 
 /**
  * @author MaccaPC
@@ -86,6 +87,9 @@ public class Downloader implements Runnable{
      return aLink;
     }
 
+    /**
+     * This is the run of each download.
+     */
     @Override
     public void run() {
         try {
@@ -95,18 +99,10 @@ public class Downloader implements Runnable{
             
             AmazonSimpleDBClient aDBCli = AwsSimpleDBCredentials.getIns("AwsCredentials.properties").initCredentials();
             DloaderDB aSdb = new DloaderDB(aDBCli);
-
+            
             aSdb.addLinksToChart("dloaderdomain", extractFilename(fileUrlStr));
             
             List<Item> itemLst = aSdb.getDloaderLinks("dloaderdomain");
-            for (Item item : itemLst) {
-                System.out.println("ITEM NAME : " + item.getName());
-                List<Attribute> attrLst = item.getAttributes();
-                for (Attribute attribute : attrLst) {
-                    System.out.println(" AN ATTRIBUTE : " + attribute.getName());
-                }
-                System.out.println("--------------------------");
-            }
             
         } catch (IOException e) {
             // do nothing
