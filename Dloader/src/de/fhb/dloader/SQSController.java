@@ -5,7 +5,6 @@ package de.fhb.dloader;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Observable;
 
 import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.amazonaws.services.sqs.model.Message;

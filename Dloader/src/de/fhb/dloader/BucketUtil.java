@@ -1,11 +1,8 @@
 package de.fhb.dloader;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -158,6 +155,7 @@ public class BucketUtil {
      * 
      * @param aBckNam
      *            the given bucket name
+     * @return the String List
      * @throws IOException
      */
     public List<String> listBucketContent(String aBckNam) throws IOException {
@@ -177,24 +175,4 @@ public class BucketUtil {
 
         return strLst;
     }
-
-    /**
-     * Displays the inputstream line by line
-     * 
-     * @param input
-     *            the inputstream
-     * @throws IOException
-     */
-    private static void displayTextInputStream(InputStream input) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-        while (true) {
-            String line = reader.readLine();
-            if (line == null)
-                break;
-
-            System.out.println("    " + line);
-        }
-        System.out.println();
-    }
-
 }

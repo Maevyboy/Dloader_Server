@@ -6,7 +6,11 @@ package de.fhb.dloader;
 import java.io.IOException;
 
 /**
+ * This is the entrypoint of the Dloader Server implementation
+ * 
+ * 
  * @author MaccaPC
+ * @author Tony Hoffmann
  *
  */
 public class Controler {
